@@ -17,7 +17,15 @@ class ShopProvider extends Component {
     isMenuOpen: false,
   };
 
-  createCheckout = async () => {};
+  componentDidMount() {
+    this.createCheckout();
+  }
+
+  createCheckout = async () => {
+    const checkout = await client.checkout.create();
+    localStorage.setItem("checkout-id", checkout.id);
+    this.setState({ checkout: checkout });
+  };
 
   fetchCheckout = async () => {};
 
@@ -25,9 +33,18 @@ class ShopProvider extends Component {
 
   removeLineItem = async (lineItemIdsToRemove) => {};
 
-  fetchAllProducts = async () => {};
+  fetchAllProducts = async () => {
+    const products = await client.product.fetchAll();
+    this.setState({ products: products });
+  };
 
-  fetchProductWithHandle = async (handle) => {};
+  fetchProductWithHandle = async (handle) => {
+    const product = await client.product
+      .fetchByHandle(handle)
+      .then((product) => {
+        this.setState({ product: product });
+      });
+  };
 
   closeCart = () => {};
 
@@ -38,6 +55,7 @@ class ShopProvider extends Component {
   openMenu = () => {};
 
   render() {
+    console.log("checkout", this.state.checkout);
     return <ShopContext.Provider>{this.props.children}</ShopContext.Provider>;
   }
 }
